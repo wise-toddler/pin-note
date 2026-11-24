@@ -1,0 +1,6 @@
+{
+  "name": "pin-note",
+  "version": "1.0.2",
+  "description": "Pinned notes above the input: the agent keeps sticky notes with numbered points you can answer a few at a time, and they stay put while the chat scrolls",
+  "types": "./types/index.d.ts"
+}
