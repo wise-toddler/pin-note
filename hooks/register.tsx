@@ -22,7 +22,7 @@ const PERSON = new Set(['composer', 'bridge'])
 // starting text it is: one typed while a turn runs is handed to that turn but often starts its own after.
 const turns = { asked: [] as string[], person: new Map<string, string[]>(), mid: new Map<string, string[]>(), noted: false }
 
-// Everything is a typed command or a chord bound to one in keybindings.json (ctrl+alt+j/k/x, clear of Rectangle's
+// Everything is a typed command or a chord bound to one in keybindings.json (ctrl+alt+k/j/x, clear of Rectangle's
 // ctrl+alt shortcuts): band keys need ctrl+x tab, which doesn't reach Claude in Orca.
 const MAX_NOTES = 16 // the agent's own notes; answers have no limit
 const BODY_LINES = 6 // a note's body in the band; the rest opens in the pane
@@ -319,8 +319,8 @@ export const register: Register = on => {
     for (const tool of TOOLS) await $.tool.register({ ...tool, inputSchema: { ...tool.inputSchema } })
     await $.command.register({ name: 'unpin', description: 'Clear pinned notes: /unpin n2 for one, /unpin for all', argumentHint: '[note id]', immediate: true })
     await $.command.register({ name: 'notes', description: 'Switch the pinned notes between one-at-a-time and the list of all', immediate: true })
-    await $.command.register({ name: 'notes-next', description: 'Pinned notes: show the next one (ctrl+alt+j)', immediate: true })
-    await $.command.register({ name: 'notes-prev', description: 'Pinned notes: show the previous one (ctrl+alt+k)', immediate: true })
+    await $.command.register({ name: 'notes-next', description: 'Pinned notes: show the next one (ctrl+alt+k)', immediate: true })
+    await $.command.register({ name: 'notes-prev', description: 'Pinned notes: show the previous one (ctrl+alt+j)', immediate: true })
     await $.command.register({ name: 'notes-dismiss', description: 'Pinned notes: dismiss the one shown (ctrl+alt+x)', immediate: true })
     await $.command.register({ name: 'notes-quote', description: 'Put the shown note\'s id ([n3]) into your input to reply about it (ctrl+alt+q)', argumentHint: '[note id]', immediate: true })
     await $.command.register({ name: 'pin-answers', description: 'Also pin every answer to your messages automatically (off by default): on or off', argumentHint: 'on|off', immediate: true })
@@ -438,7 +438,7 @@ export const register: Register = on => {
   on('command.run', { command: 'notes' }, async $ => {
     const expanded = !(await read($, expandedAtom))
     await update($, expandedAtom, () => expanded)
-    return { text: expanded ? 'List view: every note\'s first lines; /notes again for one note at a time.' : 'Carousel: one note at a time, in full (ctrl+alt+j next, ctrl+alt+k previous, ctrl+alt+x dismiss).' }
+    return { text: expanded ? 'List view: every note\'s first lines; /notes again for one note at a time.' : 'Carousel: one note at a time, in full (ctrl+alt+k next, ctrl+alt+j previous, ctrl+alt+x dismiss).' }
   })
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
@@ -524,12 +524,12 @@ export const register: Register = on => {
           </Text>
         ) : null}
         {current ? drawNote(current, true) : null}
-        {/* Buttons tied to the diff viewer's actions: ctrl+alt+j/k/x are bound to them in keybindings.json, and with no
+        {/* Buttons tied to the diff viewer's actions: ctrl+alt+k/j/x are bound to them in keybindings.json, and with no
             diff open the band's button takes the chord, so a key press changes the band without a command row in the chat. */}
         <Box>
-          {many ? <Button key="next" label="⌃⌥J next" plain action="diff:nextFile" onPress={() => step($, 1)} /> : null}
+          {many ? <Button key="prev" label="⌃⌥J prev" plain action="diff:previousFile" onPress={() => step($, -1)} /> : null}
           {many ? <Text dimColor> · </Text> : null}
-          {many ? <Button key="prev" label="⌃⌥K prev" plain action="diff:previousFile" onPress={() => step($, -1)} /> : null}
+          {many ? <Button key="next" label="⌃⌥K next" plain action="diff:nextFile" onPress={() => step($, 1)} /> : null}
           {many ? <Text dimColor> · </Text> : null}
           <Button key="quote" label="⌃⌥Q quote" plain action="app:cycleDiffBase" onPress={() => quoteNote($)} />
           <Text dimColor> · </Text>

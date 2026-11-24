@@ -22,8 +22,8 @@ The band's buttons use the diff viewer's actions, so binding chords to those act
     {
       "context": "Global",
       "bindings": {
-        "ctrl+alt+j": "diff:nextFile",
-        "ctrl+alt+k": "diff:previousFile",
+        "ctrl+alt+k": "diff:nextFile",
+        "ctrl+alt+j": "diff:previousFile",
         "ctrl+alt+q": "app:cycleDiffBase",
         "ctrl+alt+x": "diff:dismiss"
       }
@@ -34,7 +34,7 @@ The band's buttons use the diff viewer's actions, so binding chords to those act
 
 | Keys | What it does |
 |---|---|
-| ⌃⌥J / ⌃⌥K | next / previous note |
+| ⌃⌥J / ⌃⌥K | previous / next note |
 | ⌃⌥Q | put the note's id (`[n3]`) in the input |
 | ⌃⌥X | dismiss the note on screen |
 
