@@ -20,6 +20,12 @@ The band's buttons use the diff viewer's actions, so binding chords to those act
 {
   "bindings": [
     {
+      "context": "Chat",
+      "bindings": {
+        "ctrl+alt+h": "abovePrompt:toggle"
+      }
+    },
+    {
       "context": "Global",
       "bindings": {
         "ctrl+alt+k": "diff:nextFile",
@@ -37,6 +43,7 @@ The band's buttons use the diff viewer's actions, so binding chords to those act
 | ⌃⌥J / ⌃⌥K | previous / next note |
 | ⌃⌥Q | put the note's id (`[n3]`) in the input |
 | ⌃⌥X | dismiss the note on screen |
+| ⌃⌥H | hide or show the band (the engine's own collapse, also `ctrl+x ctrl+a`) |
 
 ## Commands
 

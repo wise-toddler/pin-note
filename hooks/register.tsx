@@ -546,7 +546,8 @@ export const register: Register = on => {
           <Button key="quote" label="⌃⌥Q quote" plain action="app:cycleDiffBase" onPress={() => quoteNote($)} />
           <Text dimColor> · </Text>
           <Button key="dismiss" label="⌃⌥X dismiss" plain action="diff:dismiss" onPress={() => dismissCurrent($)} />
-          <Text dimColor> · /notes list</Text>
+          {/* ctrl+alt+h is bound to the engine's own abovePrompt:toggle, which hides the whole band and shows a line to bring it back. */}
+          <Text dimColor> · ⌃⌥H hide · /notes list</Text>
         </Box>
       </Box>
     )
