@@ -187,6 +187,7 @@ async function updateNote($: Engine, a: Args): Promise<string> {
     title: typeof a.title === 'string' && a.title.trim() ? a.title.trim().slice(0, 80) : note.title,
     body: typeof a.body === 'string' ? a.body : note.body,
     items,
+    updated: await $.clock.now(),
   }
   if (items.length > 0 && items.every(it => it.done)) {
     await update($, notesAtom, ns => ns.filter(n => n.id !== note.id))
@@ -196,6 +197,15 @@ async function updateNote($: Engine, a: Args): Promise<string> {
   await update($, notesAtom, ns => ns.map(n => (n.id === note.id ? next : n)))
   await save($)
   return describe(next)
+}
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+// A note's time for its header, in local time: "8:51 PM" today, "Nov 24, 8:51 PM" on another day.
+function stamp(ms: number, now: number): string {
+  const d = new Date(ms)
+  const time = `${d.getHours() % 12 || 12}:${String(d.getMinutes()).padStart(2, '0')} ${d.getHours() < 12 ? 'AM' : 'PM'}`
+  return d.toDateString() === new Date(now).toDateString() ? time : `${MONTHS[d.getMonth()]} ${d.getDate()}, ${time}`
 }
 
 async function dismissNote($: Engine, id: string): Promise<string> {
@@ -448,6 +458,7 @@ export const register: Register = on => {
     if (notes.length === 0) return next(e)
     const isList = await read($, expandedAtom)
     const at = currentIndex(notes, await read($, cursorAtom))
+    const now = await $.clock.now()
 
     const { Box, Button, Markdown, Text } = $.ui.resolve(e)
     const answers = notes.filter(n => n.kind === 'answer').length
@@ -470,6 +481,7 @@ export const register: Register = on => {
               {isAnswer ? '❓' : '📌'} {n.id} · {n.title}
               {n.items.length > 0 ? ` (${open} of ${n.items.length} open)` : ''}
             </Text>
+            <Text dimColor> · {n.updated !== undefined ? `updated ${stamp(n.updated, now)}` : `added ${stamp(n.at, now)}`}</Text>
             {whole ? null : <Text dimColor> · /unpin {n.id}</Text>}
           </Box>
           {n.body ? <Markdown key={`body-${n.id}`} text={body.text + (body.more ? `\n\n*… ${body.more} more line${body.more === 1 ? '' : 's'} · /notes for one at a time, in full*` : '')} /> : null}

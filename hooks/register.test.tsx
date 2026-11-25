@@ -235,6 +235,16 @@ test('each note header names its own /unpin id', async ($, on) => {
   await ui.unmount()
 })
 
+test('a note header shows when it was added, then when it was last updated', async ($, on) => {
+  setup(on)
+  await $.tool.run({ tool_use_id: 'tu', tool: 'mcp__pin-note__note_add', title: 'Plan' })
+  const ui = await $.ui.mount({ ...BAND, surface: 'terminal' })
+  expect((await ui.find({ type: 'Text', text: /added \d{1,2}:\d\d (AM|PM)/ }))?.text).toMatch(/added/)
+  await $.tool.run({ tool_use_id: 'tu2', tool: 'mcp__pin-note__note_update', id: 'n1', body: 'new body' })
+  expect((await ui.find({ type: 'Text', text: /updated \d{1,2}:\d\d (AM|PM)/ }))?.text).toMatch(/updated/)
+  await ui.unmount()
+})
+
 test('a cut never lands inside a table: it stops before it, or takes a short table whole', async ($, on) => {
   setup(on)
   await $.tool.run({ tool_use_id: 'tu', tool: 'mcp__pin-note__note_add', title: 'Mid', body: ['Results:', '', '| Test | Result |', '|---|---|', '| a | ok |', '| b | ok |', '| c | ok |', '| d | ok |', '| e | ok |', 'after', 'more', 'end'].join('\n') })
